@@ -1,0 +1,35 @@
+#!/bin/bash
+# chkconfig: - 85 15
+# description: contrail-hamon service
+
+. /etc/rc.d/init.d/functions
+
+case "$1" in
+    start)
+        # contral-hamon startup
+        echo -n "Starting contral-hamon: "
+        exec start contrail-hamon
+        echo "OK"
+        ;;
+    stop)
+        # contral-hamon shutdown
+        echo -n "Shutdown contral-hamon: "
+        exec stop contrail-hamon
+        echo "OK"
+        ;;
+    reload|restart)
+        $0 stop
+        $0 start
+        ;;
+    status)
+        exec status contrail-hamon
+        #status -p $pid_file cassandra
+        exit $?
+        ;;
+    *)
+        echo "Usage: `basename $0` start|stop|status|restart|reload"
+        exit 1
+esac
+
+exit 0
+
