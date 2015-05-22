@@ -1,5 +1,5 @@
 #!/bin/bash
-# chkconfig: - 85 15
+# chkconfig: 2345 99 01
 # description: contrail-hamon service
 
 . /etc/rc.d/init.d/functions
