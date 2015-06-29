@@ -2,12 +2,19 @@
 
 import subprocess
 import argparse
+import os
 
 parser = argparse.ArgumentParser()
-group = parser.add_mutually_exclusive_group()
-group.add_argument("-l","--ls",help="test optional...",action="store_true")
+parser.add_argument("file",help="file that you want to remove the notes")
+#group = parser.add_mutually_exclusive_group()
 
 args = parser.parse_args()
 
-if args.ls:
-    subprocess.Popen("ls .",shell=True)
+if args.file and os.path.exists(args.file) :
+    file = open(args.file)
+    output = open(args.file.split('/')[-1]+"_output",'w')
+    lines = file.readlines()
+    for line in lines:
+        if line[0]!='#' and line[0] != '\n':
+            output.write(line)
+#    subprocess.Popen("echo "+args.file,shell=True)
