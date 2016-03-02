@@ -3,6 +3,10 @@
 dir=`dirname $0`
 
 cmd_list="
+init
+checkout
+branch
+do_status
 do_pull
 do_clear
 do_fetch
@@ -14,6 +18,10 @@ function usage()
 {
 cat<<EOF 
 `basename $0` Usage: 
+    init param1    #param1 is the local branch name you want to build which according to origin/param1
+    checkout name1 #name1 is the name which branch you want to checkout
+    branch         #show branch of all project
+    do_status      #show status of all the project
     do_pull        #pull the latest code
     do_clear       #remove the old pkgs
     do_fetch       #fetch third_party_pkgs to proper places
@@ -49,15 +57,43 @@ function check_file_and_execute()
 
 function do_clear()
 {
-    rm -rf $dir/build/artifacts/*.rpm
+    rm -rf $dir/build/artifacts/*
+    rm -rf $dir/build/*.tgz
+    rm -rf $dir/build/artifacts_extra/*.tgz
     rm -rf $dir/controller/build/package-build/RPMS/x86_64/*.rpm
     rm -rf $dir/controller/build/package-build/RPMS/noarch/*contrail*.rpm
+    rm -rf $dir/openstack/build/package-build/RPMS/noarch/*.rpm
+}
+
+function repo_forall()
+{
+    check_env repo git
+    repo forall -p -c git $@
+}
+
+function init()
+{
+    repo_forall checkout -b $1 origin/$1
+}
+
+function checkout()
+{
+    repo_forall checkout $1
+}
+
+function branch()
+{
+    repo_forall branch
+}
+
+function do_status()
+{
+    repo_forall diff
 }
 
 function do_pull()
 {
-    check_env repo git
-    repo forall -p -c git pull
+    repo_forall pull
 }
 
 function do_fetch()
@@ -85,7 +121,7 @@ check_env python
 for cmd in $cmd_list
 do
     if [ $1 == $cmd ];then
-        $1
+        $@
         exit 0
     fi
 done
