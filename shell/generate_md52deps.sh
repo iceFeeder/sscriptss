@@ -15,7 +15,7 @@ function append_deps()
         for i in $list
         do
             if [[ $i =~ ^.*\.rpm$ ]]; then
-                echo "[`echo $i | awk -F '.rpm' '{print $1}'`]" >> $1/append_deps_file
+                echo "[`echo ${i::(-4)}`]" >> $1/append_deps_file
                 echo "file = $i" >> $1/append_deps_file
                 echo "md5 = `md5sum $1/$i | awk '{print $1}'`" >> $1/append_deps_file
                 echo "" >> $1/append_deps_file
